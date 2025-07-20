@@ -1,0 +1,2134 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    /* Custom styles for accordion functionality and table appearance */
+    .accordion-item {
+        border: 1px solid var(--medium-gray); /* Use medium-gray for border */
+        border-radius: var(--border-radius-md);
+        overflow: hidden; /* Ensures rounded corners apply correctly */
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1rem; /* Added margin for spacing between group accordions */
+    }
+
+    .accordion-header {
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle line for nested accordion */
+    }
+
+    .accordion-header h4 {
+        color: var(--white); /* Ensure heading color is white */
+        margin-bottom: 0;
+    }
+
+    .accordion-icon {
+        transition: transform 0.3s ease;
+    }
+
+    /* Rotate icon when accordion is open */
+    .accordion-item[open] .accordion-icon {
+        transform: rotate(180deg);
+    }
+
+    .accordion-content {
+        padding: 1.5rem;
+        background-color: var(--white);
+        border-top: 1px solid var(--medium-gray); /* Use medium-gray for border */
+    }
+
+    /* Styles for the individual timetables within the accordion */
+    .accordion-content .table-responsive {
+        margin-bottom: 1.5rem; /* Space between each day's timetable */
+        box-shadow: var(--shadow-sm); /* Add shadow to individual tables */
+        border-radius: var(--border-radius-md); /* Apply border-radius to responsive wrapper */
+        overflow-x: auto; /* IMPORTANT: Enables horizontal scrolling for tables */
+        -webkit-overflow-scrolling: touch; /* Improves scrolling on iOS */
+    }
+
+    .accordion-content table {
+        width: 100%; /* Ensure table takes full width of its container */
+        min-width: 600px; /* Give tables a minimum width to force horizontal scroll if needed */
+        border-collapse: collapse;
+        margin-top: 0; /* Remove default table margin-top as it's handled by table-responsive margin-bottom */
+    }
+
+    .accordion-content table caption {
+        font-size: 1.1em;
+        font-weight: bold;
+        text-align: left;
+        margin-bottom: 0.5rem;
+        color: var(--white); /* Changed to white */
+        background-color: var(--secondary-color); /* Use secondary color for caption background */
+        padding: 0.75rem 1rem; /* Adjust caption padding */
+        border-top-left-radius: var(--border-radius-md); /* Match table-responsive border-radius */
+        border-top-right-radius: var(--border-radius-md); /* Match table-responsive border-radius */
+    }
+
+    .accordion-content table caption .institution {
+        font-size: 0.9em;
+        color: var(--white); /* Changed to white */
+        display: block;
+        opacity: 0.9;
+    }
+
+    .accordion-content table th,
+    .accordion-content table td {
+        border: 1px solid var(--medium-gray); /* Consistent border color */
+        padding: 0.75rem;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .accordion-content table thead th {
+        background-color: var(--light-gray); /* Use light-gray for header background */
+        font-weight: bold;
+        text-align: center;
+        color: var(--text-color); /* Ensure header text is readable */
+    }
+
+    .accordion-content table tbody tr:nth-child(odd) {
+        background-color: var(--white);
+    }
+
+    .accordion-content table tbody tr:nth-child(even) {
+        background-color: var(--light-gray);
+    }
+
+    .accordion-content table .yAxis {
+        background-color: var(--primary-color);
+        color: var(--white);
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .accordion-content table .foot {
+        font-size: 0.8em;
+        color: var(--dark-gray);
+        background-color: var(--light-gray);
+    }
+
+    /* Button styling */
+    .accordion-content .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--white);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .accordion-content .btn-primary:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-1px);
+    }
+
+    /* Mobile specific adjustments for tables within accordion */
+    @media (max-width: 768px) {
+        .accordion-content table th,
+        .accordion-content table td {
+            padding: 0.5rem;
+            font-size: 0.9em;
+        }
+
+        .accordion-header {
+            padding: 1rem; /* Adjust padding for smaller screens */
+        }
+
+        .accordion-content table caption {
+            font-size: 1em; /* Smaller font for captions on mobile */
+            padding: 0.5rem 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="mb-4">
+        <p class="campus">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</p>
+        <p class="text-large">SEMESTER I ACADEMIC YEAR 2025/2026</p>
+    </div>
+
+    <!-- Main Faculty Accordion -->
+    <details class="card mb-5">
+        <summary class="card-header d-flex align-items-center">
+            <h3 class="mb-0">View Lecturers' Schedules (Kampala Campus)</h3>
+            <i class="fas fa-chevron-down ml-auto accordion-icon"></i>
+        </summary>
+        <div class="card-body">
+            <p class="mb-3 text-muted">Click on a Lecturer's name to view their schedule. <strong>For best viewing, use computer/laptop/tablet</strong>. Use <strong>landscape mode</strong> to view on smartphone:</p>
+
+            <!-- Faculty Member: Dr. Mugejjera Emmanuel -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Dr. Mugejjera Emmanuel 0703186705</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Dr. Mugejjera Emmanuel 0703186705</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>YEAR TWO BCS<br /><b>BCS 2107 Systems Programming</b><br /><b>Room: Block C Computer Lab</b><br /></td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR THREE BIT, YEAR THREE BBC, YEAR THREE BCS<br /><b>BIT 3106/BCS 3107/BRM/BIS 3108/BSE 4107 Final Year Project Planning and Design</b><br /><b>Room: D4-4</b><br /></td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Dr. Nalele Kizito -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Dr. Nalele Kizito</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Dr. Nalele Kizito</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>YEAR ONE BBC<br /><b>BBC 1102 Fundamentals of Accounting</b><br /><b>Room: Room: D2-1</b><br /></td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Dr. Sebuliba Joseph -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Dr. Sebuliba Joseph 0788926444</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Dr. Sebuliba Joseph 0788926444</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT<br /><b>BIT/DIT 1104 Mathematics for I.T.</b><br /><b>Room: F2-1</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>YEAR TWO BCS<br /><b>BCS 2106 Numerical Analysis</b><br /><b>Room: F2-1</b><br /></td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Dr. Setekera Robert -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Dr. Setekera Robert 0789702701</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Dr. Setekera Robert 0789702701</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>YEAR THREE BBC<br /><b>BBC 3103 Operations Research</b><br /><b>Room: F1-1</b><br /></td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Bazanya Matthew -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Bazanya Matthew 0773344599</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Bazanya Matthew 0773344599</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2104 Internet Technologies and Website Design</b><br /><b>Room: Block D Computer Lab</b><br /></td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BBC, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT /DIT/BCS 2103/BSE 2106/BBC 2102/BRM 2106 Database Management Systems </b><br /><b>Room: Block D Computer Lab</b><br /></td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Bazzeketa Datsun -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Bazzeketa Datsun 0705333525</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Bazzeketa Datsun 0705333525</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>YEAR THREE BIT<br /><b>BIT 3102 Human Computer Interaction</b><br /><b>Room: G4-1</b><br /></td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>YEAR THREE BCS<br /><b>BCS 3107/BSE 4103 Distributed Systems</b><br /><b>Room: G4-1</b><br /></td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Bivanju Sinan -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Bivanju Sinan 0772195947</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Bivanju Sinan 0772195947</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Bukoli Herbertson -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Bukoli Herbertson 0702186668</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Bukoli Herbertson 0702186668</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>YEAR TWO BBC<br /><b>BBC 2101 ICT Law &amp; Practice</b><br /><b>Room: D4-4</b><br /></td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>YEAR THREE BIT, YEAR THREE BCS, YEAR TWO BBC<br /><b>BIT /BCS 3105/BBC 2105/BSE 3101 User Interface &amp; Programming with Visual Basic</b><br /><b>Room: Block D Computer Lab</b><br /></td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Jude Iyke Nicholars -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Jude Iyke Nicholars 0782909117</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Jude Iyke Nicholars 0782909117</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>YEAR TWO BBC<br /><b>BSE /BBC 2104 Internet of Things &amp; Computer Networks and Data communications</b><br /><b>Room: D4-3</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>YEAR THREE BIT, YEAR THREE BCS<br /><b>BIT 3103/BCS 3102 Business Intelligence and Data Warehousing</b><br /><b>Room: D4-1</b><br /></td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Kalule Ezra -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Kalule Ezra 0704664946</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Kalule Ezra 0704664946</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Kateete Twaha -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Kateete Twaha 0778313421</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Kateete Twaha 0778313421</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>-x-</td>
+                                    <td>YEAR THREE BCS<br /><b>BCS 3104 Client-Server Progarmming for Application</b><br /><b>Room: FORMER LAB F</b><br /></td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Kimera Rogers -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Kimera Rogers 0773975761</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Kimera Rogers 0773975761</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>YEAR ONE BBC<br /><b>BBC /BSE 2101 Data Structures Using C</b><br /><b>Room: FORMER LAB F</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Dr. Kitata Paul -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Dr. Kitata Paul</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Dr. Kitata Paul</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Kiwalabye Charles -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Kiwalabye Charles 0704415668 </h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Kiwalabye Charles 0704415668 </span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Luyima Alex Cedric -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Luyima Alex Cedric 0772302775 </h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Luyima Alex Cedric 0772302775 </span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>YEAR THREE BCS<br /><b>BCS 3106 Machine Learning</b><br /><b>Room: Block C Computer Lab</b><br /></td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS<br /><b>BIT/DIT/BCS 1106/BSE 1101 Principles of Programming using C</b><br /><b>Room: Block D Computer Lab</b><br /></td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT 1201/BCS 1206 Structured Programming (JAN INTAKE ONLY) ***[Check Weekend Timetable]</b><br /></td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Muchake Brian -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Muchake Brian 0701178573</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Muchake Brian 0701178573</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>YEAR THREE BIT, YEAR THREE BCS<br /><b>BIT/BCS 3101 Systems Administration</b><br /><b>Room: Block D Computer Lab</b><br /></td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR THREE BCS<br /><b>BCS 3106/BSE 4105 Computational Game Theory and Economics </b><br /><b>Room: D4-3</b><br /></td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Musisi Pascal -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Musisi Pascal 0781078532</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Musisi Pascal 0781078532</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Mutekanga Ivan -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Mutekanga Ivan 0706180963</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Mutekanga Ivan 0706180963</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Mwanje Abiyasaali -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Mwanje Abiyasaali 0778798741 </h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Mwanje Abiyasaali 0778798741 </span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>YEAR ONE BCS<br /><b>BCS 1104 Probability and Statistics</b><br /><b>Room: F1</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Mwebaza Marvin -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Mwebaza Marvin</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Mwebaza Marvin</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BBC<br /><b>BIT /DIT 1102/BCS 1108/BIS 3102 Entrepreneurship and Development ***[With Faculty of Business]</b><br /><b>Room: Room: D2-1</b><br /></td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Nabimanya Peter -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Nabimanya Peter 0772538333 </h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Nabimanya Peter 0772538333 </span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BBC, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/BCS 2108/DIT 2106/BSE/BBC 2107 CISCO Certified Network Associates</b><br /><b>Room: Block D Computer Lab</b><br /></td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>YEAR TWO BIT, YEAR TWO DIT, YEAR TWO BCS, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2105 Computer Repair and Maintenance</b><br /><b>Room: FORMER LAB F</b><br /></td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BBC<br /><b>BIT/DIT/BCS/BSE 1108/BBC 1107 CISCO Certified Network Associates</b><br /><b>Room: Block D Computer Lab</b><br /></td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Namukangula Jude -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Namukangula Jude 0772853624</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Namukangula Jude 0772853624</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>-x-</td>
+                                    <td>YEAR TWO BCS<br /><b>BCS 2105/ BSE 2103 Systems Analysis and Design</b><br /><b>Room: D4-2</b><br /></td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Onyango Laban -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Onyango Laban 0702472180</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Onyango Laban 0702472180</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT 2101/BCS 2104 Object Oriented Programming /BSE 3103 Object Oriented Software Engineering (Java)</b><br /><b>Room: Block D Computer Lab</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>YEAR THREE BIT, YEAR THREE BBC<br /><b>BIT/BBC 3104/BIS 3103 /BSE 4104 IT Project Planning and Management</b><br /><b>Room: D4-1</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mr. Sekitto Steven -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Sekitto Steven 0753447936</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mr. Sekitto Steven 0753447936</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                    <td>YEAR ONE BCS, YEAR ONE BBC<br /><b>BCS 1103/BSE 1102/BBC 1108 Discrete Mathematics</b><br /><b>Room: F1</b><br /></td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mrs. Elizabeth Muwanguzi -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mrs. Elizabeth Muwanguzi, 0772563143</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mrs. Elizabeth Muwanguzi, 0772563143</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mrs. Irene Nakayenga Sserunjogi -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mrs. Irene Nakayenga Sserunjogi 0776058596</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mrs. Irene Nakayenga Sserunjogi 0776058596</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Mrs. Kakande Ritah -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mrs. Kakande Ritah</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Mrs. Kakande Ritah</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BBC<br /><b>BIT/DIT/BCS/DCS/BSE 1103 /BRM 1106/BIS/BBC 1104 Communication Skills***[With Faculty of Business]</b><br /><b>Room: Basement (Block D)</b><br /></td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Ms. Mirembe Deborah Senkaali -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Mirembe Deborah Senkaali</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Ms. Mirembe Deborah Senkaali</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>YEAR THREE BBC<br /><b>BBC 3102 Development Economics ***[With Faculty of Business]</b><br /><b>Room: Basement (Block D)</b><br /></td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Ms. Naluyange Edith -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Naluyange Edith 0783035346</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Ms. Naluyange Edith 0783035346</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Ms. Namata Suzan -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Namata Suzan 0786983852</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Ms. Namata Suzan 0786983852</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Ms. Namayanja Rehema -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Namayanja Rehema 0700548744</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Ms. Namayanja Rehema 0700548744</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT 2102 Management Information Systems and Development</b><br /><b>Room: D4-4</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>-x-</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Ms. Namujju Victoria -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Namujju Victoria 0774 177 843</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Ms. Namujju Victoria 0774 177 843</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Ms. Nantege Hellen -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Nantege Hellen 0774442476</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Ms. Nantege Hellen 0774442476</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>-x-</td>
+                                    <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT 2106 Computer Networks and Data Communications</b><br /><b>Room: D4-2</b><br /></td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>-x-</td>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT<br /><b>BIT/DIT 1105/BSE 1203 Fundamentals of Information Systems</b><br /><b>Room: D4-1</b><br /></td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>-x-</td>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS<br /><b>BIT/DIT 1103/BBC/BCS/BRM/BIS 1105 Introduction to Information Technology</b><br /><b>Room: Block D Computer Lab</b><br /></td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                    <td>-x-</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: MS. Nyakato Irene -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>MS. Nyakato Irene 0783585829</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">MS. Nyakato Irene 0783585829</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Ms. Turyabahirwa Alice -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Turyabahirwa Alice 0703541955</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Ms. Turyabahirwa Alice 0703541955</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Rev. Juliet Nabatanzi Kansiime -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Rev. Juliet Nabatanzi Kansiime 0777523044 </h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Rev. Juliet Nabatanzi Kansiime 0777523044 </span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BBC<br /><b>BIT/DIT/BCS/BBC 1101/BSE 1108/BRM 1107/BIS 1104 Christian Ethics I [***With Other Faculties]</b><br /><b>Room: Basement (Block D)</b><br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Faculty Member: Rev. Latimer Muwanguzi -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Rev. Latimer Muwanguzi</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">FACULTY OF SCIENCE &amp; COMPUTING - DAY KAMPALA CAMPUS - NDEJJE UNIVERSITY</span><br /><span class="name">Rev. Latimer Muwanguzi</span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">MON</th>
+                                    <th class="xAxis">TUE</th>
+                                    <th class="xAxis">WED</th>
+                                    <th class="xAxis">THUR</th>
+                                    <th class="xAxis">FRI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">08:00AM-11:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">11:00AM-02:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="5">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+        </div>
+    </details>
+</div>
+{% endblock %}

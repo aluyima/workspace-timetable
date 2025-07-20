@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block title %}Lecturer Schedules | Faculty of Science & Computing{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Additional styles specific to this page */
+    .lecturer-hero {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 2rem 1rem;
+        border-radius: var(--border-radius-md);
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .lecturer-hero h1,.lecturer-hero .text-large {
+        color: white;  /* Explicitly set h1 color to white */
+    }
+    
+    .schedule-card {
+        border-left: 4px solid var(--accent-color);
+    }
+    
+    .schedule-type {
+        color: var(--accent-color);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+    
+    .stat-number {
+        color: var(--primary-color);
+        font-weight: 700;
+    }
+    
+    .search-box {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+    
+    .search-box input {
+        border-right: none;
+    }
+    
+    .search-box button {
+        border-left: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <section class="lecturer-hero">
+        <h1>Lecturer Schedules</h1>
+        <p class="text-large">Faculty of Science & Computing - Semester I 2025/2026</p>
+    </section>
+
+    <!-- Schedule Options -->
+    <section>
+        <h2 class="section-title">View Schedules</h2>
+        <div class="card-grid">
+            <!-- Day Schedule - Kampala Campus -->
+            <div class="card schedule-card">
+                <div class="card-header">
+                    <div class="card-icon">👨‍🏫</div>
+                    <h3>Lecturer Schedule</h3>
+                </div>
+                <div class="card-body">
+                    <p class="schedule-type">Day Program</p>
+                    <p class="campus">Kampala Campus</p>
+                    <p class="text-muted mb-3">
+                        <i class="far fa-clock mr-1"></i> Mon-Fri: 8:00AM - 5:00PM
+                    </p>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="stat-item text-center">
+                            <span class="stat-number display-5">42</span>
+                            <span class="text-muted">Lecturers</span>
+                        </div>
+                        <div class="stat-item text-center">
+                            <span class="stat-number display-5">18</span>
+                            <span class="text-muted">Rooms</span>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="/schedule/day/kampala" class="btn btn-primary">
+                            View Schedule <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                        <!--<a href="/lecturers/day/kampala/pdf" class="btn btn-outline-primary">
+                            Download PDF <i class="fas fa-download ml-1"></i>
+                        </a> -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Day Schedule - Main Campus -->
+            <div class="card schedule-card">
+                <div class="card-header">
+                    <div class="card-icon">👩‍🏫</div>
+                    <h3>Lecturer Schedule</h3>
+                </div>
+                <div class="card-body">
+                    <p class="schedule-type">Day Program</p>
+                    <p class="campus">Main Campus</p>
+                    <p class="text-muted mb-3">
+                        <i class="far fa-clock mr-1"></i> Mon-Fri: 8:00AM - 5:00PM
+                    </p>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="stat-item text-center">
+                            <span class="stat-number display-5">22</span>
+                            <span class="text-muted">Lecturers</span>
+                        </div>
+                        <div class="stat-item text-center">
+                            <span class="stat-number display-5">&nbsp;7</span>
+                            <span class="text-muted">Rooms</span>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="/schedule/day/main" class="btn btn-primary">
+                            View Schedule <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                        <!--<a href="/lecturers/day/main/pdf" class="btn btn-outline-primary">
+                            Download PDF <i class="fas fa-download ml-1"></i>
+                        </a>-->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Weekend Schedule - Kampala Campus -->
+            <div class="card schedule-card">
+                <div class="card-header">
+                    <div class="card-icon">🏫</div>
+                    <h3>Lecturer Schedule</h3>
+                </div>
+                <div class="card-body">
+                    <p class="schedule-type">Weekend Program</p>
+                    <p class="campus">Kampala Campus</p>
+                    <p class="text-muted mb-3">
+                        <i class="far fa-clock mr-1"></i> Sat-Sun: 9:00AM - 4:00PM
+                    </p>
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="stat-item text-center">
+                            <span class="stat-number display-5">28</span>
+                            <span class="text-muted">Lecturers</span>
+                        </div>
+                        <div class="stat-item text-center">
+                            <span class="stat-number display-5">12</span>
+                            <span class="text-muted">Rooms</span>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="/schedule/weekend/kampala" class="btn btn-primary">
+                            View Schedule <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                       <!-- <a href="/lecturers/weekend/kampala/pdf" class="btn btn-outline-primary">
+                            Download PDF <i class="fas fa-download ml-1"></i>
+                        </a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section
+    <section class="search-section">
+        <h3 class="section-title">Find Specific Lecturer</h3>
+        <div class="search-box">
+            <input type="text" class="form-control" placeholder="Enter lecturer name..." aria-label="Search lecturer by name">
+            <button class="btn btn-primary" type="submit" aria-label="Search">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </section>
+</div>
+-->
+{% endblock %}
+
+{% block scripts %}
+<!-- Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %}Timetable Portal | Faculty of Science & Computing{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Additional premium styles */
+    .hero {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 3rem 1rem;
+        border-radius: var(--border-radius-md);
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .hero h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .hero p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+    }
+    
+    .card {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        border: none;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--accent-color);
+    }
+    
+    .card-header {
+        background: white;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        background: var(--light-gray);
+        width: 60px;
+        height: 60px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    
+    .quick-link-card {
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--accent-color);
+    }
+    
+    .quick-link-card:hover {
+        transform: translateX(5px);
+    }
+    
+    .section-title {
+        position: relative;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--accent-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Faculty of Science & Computing</h1>
+        <p>Semester I 2025/2026 Timetables</p>
+    </section>
+
+    <!-- Timetable Options -->
+    <section class="mb-5">
+        <h2 class="section-title">View Timetables</h2>
+        <div class="card-grid">
+            <!-- Day Study - Kampala Campus -->
+            <div class="card">
+                <div class="card-header text-center">
+                    <div class="card-icon">📅</div>
+                    <h3>Day Study Time</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-center campus mb-2">Kampala Campus</p>
+                    <p class="text-center text-muted mb-3">
+                        <i class="far fa-clock mr-1"></i> Mon-Fri, 8:00AM - 5:00PM
+                    </p>
+                    <div class="text-center">
+                        <a href="/timetable/day/kampala" class="btn btn-primary" aria-label="View Kampala Day Timetable">
+                            View Timetable <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Day Study - Main Campus -->
+            <div class="card">
+                <div class="card-header text-center">
+                    <div class="card-icon">🏫</div>
+                    <h3>Day Study Time</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-center campus mb-2">Main Campus</p>
+                    <p class="text-center text-muted mb-3">
+                        <i class="far fa-clock mr-1"></i> Mon-Fri, 8:00AM - 5:00PM
+                    </p>
+                    <div class="text-center">
+                        <a href="/timetable/day/main" class="btn btn-primary" aria-label="View Main Campus Day Timetable">
+                            View Timetable <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Weekend Study - Kampala Campus -->
+            <div class="card">
+                <div class="card-header text-center">
+                    <div class="card-icon">🌇</div>
+                    <h3>Weekend Study Time</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-center campus mb-2">Kampala Campus</p>
+                    <p class="text-center text-muted mb-3">
+                        <i class="far fa-clock mr-1"></i> Sat-Sun, 7:00AM - 8:00PM
+                    </p>
+                    <div class="text-center">
+                        <a href="/timetable/weekend/kampala" class="btn btn-primary" aria-label="View Kampala Weekend Timetable">
+                            View Timetable <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Links
+    <section class="mb-4">
+        <h2 class="section-title">Quick Access</h2>
+        <div class="card-grid">
+            <a href="#" class="card quick-link-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <span class="card-icon mr-3">📋</span>
+                        <div>
+                            <h4 class="mb-0">All Timetables</h4>
+                            <small class="text-muted">Complete schedule list</small>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="/lecturers/schedules" class="card quick-link-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <span class="card-icon mr-3">👨‍🏫</span>
+                        <div>
+                            <h4 class="mb-0">Lecturer Schedules</h4>
+                            <small class="text-muted">View by instructor</small>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="#" class="card quick-link-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <span class="card-icon mr-3">🏢</span>
+                        <div>
+                            <h4 class="mb-0">Room Availability</h4>
+                            <small class="text-muted">Check room schedules</small>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="#" class="card quick-link-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <span class="card-icon mr-3">📱</span>
+                        <div>
+                            <h4 class="mb-0">Mobile Version</h4>
+                            <small class="text-muted">Optimized for phones</small>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+</div>
+-->
+{% endblock %}
+
+{% block scripts %}
+<!-- Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

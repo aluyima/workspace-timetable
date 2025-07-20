@@ -3,130 +3,504 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty of Science & Computing Timetable Website</title>
+    <title>University Timetable</title>
+    <!-- Favicon -->
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #153b75;
+            --accent-color: #F7B731;
+            --text-color: #333333;
+            --light-gray: #f8f9fa;
+            --medium-gray: #dee2e6;
+            --dark-gray: #6c757d;
+            --white: #ffffff;
+            --border-radius-sm: 0.25rem;
+            --border-radius-md: 0.5rem;
+            --border-radius-lg: 0.75rem;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
         body {
-            font-family: sans-serif;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-color);
+            background-color: #f0f2f5;
+            line-height: 1.6;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* Ensure footer stays at the bottom */
-            background-color: #f4f4f4;
-            color: #333;
-        }
-
-        header {
-            background-color: #333;
-            color: white;
-            padding: 1em 0;
-            text-align: center;
-        }
-
-        nav ul {
-            list-style: none;
             padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
-
-        nav ul li {
-            margin: 0 1em;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
         }
 
         .container {
-            max-width: 960px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            flex-grow: 1; /* Allow container to grow and push footer down */
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: var(--white);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
         }
 
-        footer {
-            background-color: #333;
-            color: white;
+        .header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1.5rem 1rem;
+            border-top-left-radius: var(--border-radius-lg);
+            border-top-right-radius: var(--border-radius-lg);
             text-align: center;
-            padding: 1em 0;
+            box-shadow: var(--shadow-sm);
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            nav ul {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            nav ul li {
-                margin: 0.5em 0;
-            }
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
         }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .campus {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .text-large {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        /* Card styles for general sections */
+        .card {
+            background-color: var(--white);
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer; /* Indicates it's clickable for details/summary */
+        }
+
+        .card-header h3 {
+            color: var(--white);
+            margin-bottom: 0;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Accordion specific styles */
+        details {
+            margin-bottom: 1rem;
+        }
+
+        details > summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 1rem 1.5rem;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        details > summary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details[open] > summary {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        details .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+
+        details[open] .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            background-color: var(--white);
+            border: 1px solid var(--medium-gray);
+            border-top: none;
+            border-bottom-left-radius: var(--border-radius-md);
+            border-bottom-right-radius: var(--border-radius-md);
+            padding: 1.5rem;
+        }
+
+        /* Table specific styles */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            margin-bottom: 1.5rem;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--medium-gray); /* Added border to responsive wrapper */
+        }
+
         table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px; /* Ensures horizontal scroll on smaller screens if content overflows */
+        }
 
-    th, td {
-        padding: 12px;
-        text-align: left;
-        border: 1px solid #ddd;
-    }
+        table caption {
+            font-size: 1.1em;
+            font-weight: bold;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            border-top-left-radius: var(--border-radius-md);
+            border-top-right-radius: var(--border-radius-md);
+        }
 
-    th {
-        background-color: #f2f2f2;
-    }
+        table caption .institution {
+            font-size: 0.9em;
+            display: block;
+            opacity: 0.9;
+        }
 
-    .odd_table {
-        background-color: #f9f9f9;
-    }
+        table th,
+        table td {
+            border: 1px solid var(--medium-gray);
+            padding: 0.75rem;
+            text-align: left;
+            vertical-align: top;
+        }
 
-    .even_table {
-        background-color: #ffffff;
-    }
+        table thead th {
+            background-color: var(--light-gray);
+            font-weight: bold;
+            text-align: center;
+            color: var(--text-color);
+        }
 
-    .back {
-        text-align: right;
-        margin: 10px 0;
-    }
+        table tbody tr:nth-child(odd) {
+            background-color: var(--white);
+        }
 
-    .foot {
-        font-size: 0.8em;
-        color: #666;
-    }
+        table tbody tr:nth-child(even) {
+            background-color: var(--light-gray);
+        }
+
+        table .yAxis {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        table .foot {
+            font-size: 0.8em;
+            color: var(--dark-gray);
+            background-color: var(--light-gray);
+        }
+
+        /* Button styles */
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--border-radius-sm);
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        /* Footer styles */
+        .footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem 1rem;
+            margin-top: 2rem;
+            border-bottom-left-radius: var(--border-radius-lg);
+            border-bottom-right-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .footer p {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Navigation styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger .bar {
+            width: 25px;
+            height: 3px;
+            background-color: var(--white);
+            border-radius: 5px;
+        }
+
+        /* --- Mobile Specific Optimizations --- */
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem auto;
+                padding: 0.5rem;
+                border-radius: 0; /* Remove rounded corners on very small screens for full width */
+                box-shadow: none; /* Remove shadow on very small screens */
+            }
+
+            .header {
+                padding: 1rem 0.5rem;
+                border-radius: 0;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+
+            .campus {
+                font-size: 1rem;
+            }
+
+            .text-large {
+                font-size: 1.2rem;
+            }
+
+            details > summary {
+                padding: 0.75rem 1rem; /* Smaller padding for summary */
+                font-size: 0.95rem; /* Slightly smaller font for summary text */
+                border-radius: var(--border-radius-sm);
+            }
+
+            .accordion-content {
+                padding: 1rem; /* Reduced padding inside accordion content */
+            }
+
+            table {
+                min-width: 450px; /* Adjust minimum width for horizontal scroll on smaller phones */
+            }
+
+            table th,
+            table td {
+                padding: 0.4rem; /* Reduced padding for table cells */
+                font-size: 0.8em; /* Smaller font size for table content */
+            }
+
+            table caption {
+                font-size: 0.9em; /* Smaller font for captions on mobile */
+                padding: 0.5rem 0.75rem;
+            }
+
+            /* Further optimization for content within table cells */
+            table td {
+                /* This helps stack content if it's separated by <br> */
+                display: table-cell; /* Revert to default for general cells */
+            }
+
+            table td br {
+                content: ''; /* Ensure <br> still creates line breaks */
+                display: block;
+                margin-bottom: 0.2em; /* Small space between stacked lines */
+            }
+
+            /* Specific styling for course/lecturer/room lines within a cell */
+            table td > *:not(br) {
+                display: block; /* Make direct children block to stack them */
+                line-height: 1.3; /* Adjust line height for stacked content */
+            }
+
+            table td b {
+                font-size: 0.9em; /* Slightly larger for bold course names */
+            }
+
+            table td i {
+                font-size: 0.8em; /* Slightly smaller for italic lecturer names */
+                color: var(--dark-gray); /* Dimmer color for lecturer names */
+            }
+
+            .btn-primary {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9em;
+            }
+
+            /* Mobile navigation */
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--primary-color);
+                position: absolute;
+                top: 100%;
+                left: 0;
+                padding: 1rem 0;
+                box-shadow: var(--shadow-md);
+                z-index: 1000;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                padding: 0.8rem 1rem;
+                text-align: center;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .nav-links a:last-child {
+                border-bottom: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .navbar {
+                position: relative; /* For absolute positioning of nav-links */
+            }
+        }
+
+        @media (max-width: 480px) { /* Even smaller screens */
+            table {
+                min-width: 380px; /* Even smaller min-width for very small phones */
+            }
+            table th,
+            table td {
+                padding: 0.3rem; /* Even more reduced padding */
+                font-size: 0.75em; /* Even smaller font size */
+            }
+            details > summary {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9em;
+            }
+            .accordion-content {
+                padding: 0.8rem;
+            }
+        }
+        
     </style>
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <header>
-        <h1>Ndejje University</h1>
-        <h2>Faculty of Science and Computing</h2>
-        <nav>
-            <ul>
-                <li><a href="/">Timetables</a></li>
-                <li><a href="/teachers">Lecturer Schedules</a></li>
-                <li><a href="#">Rooms Allocation</a></li>
-            </ul>
-        </nav>
+    <header class="header">
+        <div class="navbar">
+            <div class="flex items-center space-x-3">
+                <img 
+                    src="/static/images/logo.png" 
+                    onerror="this.onerror=null;this.src='https://placehold.co/64x64/1a365d/ffffff?text=LOGO';" 
+                    alt="University Logo" 
+                    class="h-8 w-auto rounded-full object-contain"
+                    width="64"
+                    height="64"
+                    loading="lazy"
+                >
+                <h1 class="text-white text-2xl font-bold">NDEJJE UNIVERSITY</h1>
+            </div>
+            <div class="hamburger" id="hamburger-menu">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <nav class="nav-links" id="nav-links">
+                <a href="/">Home</a>
+                <a href="/lecturers/schedules">Lecturer Schedules</a>
+            </nav>
+        </div>
+        <p class="text-white text-lg mt-2">Faculty of Science &amp; Computing Timetable</p>
     </header>
-
-    <div class="container">
-        <h2>Welcome to the Timetable Website</h2>
-        <div class="container">
-            {% block content %}{% endblock %}
-        </div>
-        <p>This is where the timetable information will be displayed.</p>
-
-        </div>
-
-        
-
-    <footer>
-        <p>&copy; 2025 Timetable Website</p>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="footer">
+        <p>&copy; 2025 AI Research Center - Faculty of Science & Computing - NDEJJE UNIVERSITY</p>
+        <p>Support Email: <a href="mailto:enaluyange@ndejjeuniversity.ac.ug">enaluyange@ndejjeuniversity.ac.ug</a></p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger-menu');
+            const navLinks = document.getElementById('nav-links');
+
+            if (hamburger && navLinks) {
+                hamburger.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
