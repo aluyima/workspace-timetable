@@ -1,10 +1,1280 @@
 ﻿{% extends 'base.html' %}
 
+{% block extra_css %}
+<style>
+    /* Custom styles for accordion functionality and table appearance */
+    .accordion-item {
+        border: 1px solid var(--medium-gray); /* Use medium-gray for border */
+        border-radius: var(--border-radius-md);
+        overflow: hidden; /* Ensures rounded corners apply correctly */
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1rem; /* Added margin for spacing between group accordions */
+    }
+
+    .accordion-header {
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle line for nested accordion */
+    }
+
+    .accordion-header h4 {
+        color: var(--white); /* Ensure heading color is white */
+        margin-bottom: 0;
+    }
+    
+    .accordion-header h5 {
+        color: var(--white); /* Ensure heading color is white */
+        margin-bottom: 0;
+    }
+
+    .accordion-icon {
+        transition: transform 0.3s ease;
+    }
+
+    /* Rotate icon when accordion is open */
+    .accordion-item[open] .accordion-icon {
+        transform: rotate(180deg);
+    }
+
+    .accordion-content {
+        padding: 1.5rem;
+        background-color: var(--white);
+        border-top: 1px solid var(--medium-gray); /* Use medium-gray for border */
+    }
+
+    /* Styles for the individual timetables within the accordion */
+    .accordion-content .table-responsive {
+        margin-bottom: 1.5rem; /* Space between each day's timetable */
+        box-shadow: var(--shadow-sm); /* Add shadow to individual tables */
+        border-radius: var(--border-radius-md); /* Apply border-radius to responsive wrapper */
+        overflow-x: auto; /* IMPORTANT: Enables horizontal scrolling for tables */
+        -webkit-overflow-scrolling: touch; /* Improves scrolling on iOS */
+    }
+
+    .accordion-content table {
+        width: 100%; /* Ensure table takes full width of its container */
+        min-width: 600px; /* Give tables a minimum width to force horizontal scroll if needed */
+        border-collapse: collapse;
+        margin-top: 0; /* Remove default table margin-top as it's handled by table-responsive margin-bottom */
+    }
+
+    .accordion-content table caption {
+        font-size: 1.1em;
+        font-weight: bold;
+        text-align: left;
+        margin-bottom: 0.5rem;
+        color: var(--white); /* Changed to white */
+        background-color: var(--secondary-color); /* Use secondary color for caption background */
+        padding: 0.75rem 1rem; /* Adjust caption padding */
+        border-top-left-radius: var(--border-radius-md); /* Match table-responsive border-radius */
+        border-top-right-radius: var(--border-radius-md); /* Match table-responsive border-radius */
+    }
+
+    .accordion-content table caption .institution {
+        font-size: 0.9em;
+        color: var(--white); /* Changed to white */
+        display: block;
+        opacity: 0.9;
+    }
+
+    .accordion-content table th,
+    .accordion-content table td {
+        border: 1px solid var(--medium-gray); /* Consistent border color */
+        padding: 0.75rem;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .accordion-content table thead th {
+        background-color: var(--light-gray); /* Use light-gray for header background */
+        font-weight: bold;
+        text-align: center;
+        color: var(--text-color); /* Ensure header text is readable */
+    }
+
+    .accordion-content table tbody tr:nth-child(odd) {
+        background-color: var(--white);
+    }
+
+    .accordion-content table tbody tr:nth-child(even) {
+        background-color: var(--light-gray);
+    }
+
+    .accordion-content table .yAxis {
+        background-color: var(--primary-color);
+        color: var(--white);
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .accordion-content table .foot {
+        font-size: 0.8em;
+        color: var(--dark-gray);
+        background-color: var(--light-gray);
+    }
+
+    /* Button styling */
+    .accordion-content .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--white);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .accordion-content .btn-primary:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-1px);
+    }
+
+    /* Mobile specific adjustments for tables within accordion */
+    @media (max-width: 768px) {
+        .accordion-content table th,
+        .accordion-content table td {
+            padding: 0.5rem;
+            font-size: 0.9em;
+        }
+
+        .accordion-header {
+            padding: 1rem; /* Adjust padding for smaller screens */
+        }
+
+        .accordion-content table caption {
+            font-size: 1em; /* Smaller font for captions on mobile */
+            padding: 0.5rem 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container text-center py-5">
-    <h2 class="display-4 text-primary mb-4">Coming Soon</h2>
-    <p class="lead text-muted">The Weekend Kampala Timetable is currently being prepared.</p>
-    <p class="lead text-muted">Please check back later.</p>
-    <img src="[https://placehold.co/400x200/e0e0e0/555555?text=Under+Construction](https://placehold.co/400x200/e0e0e0/555555?text=Under+Construction)" alt="Under Construction" class="img-fluid mt-4 rounded-md shadow-sm">
+<div class="container">
+    <div class="mb-4">
+        <p class="campus">FACULTY OF SCIENCE &amp; COMPUTING - WEEKEND KAMPALA CAMPUS - NDEJJE UNIVERSITY</p>
+        <p class="text-large">SEMESTER I ACADEMIC YEAR 2025/2026</p>
+    </div>
+
+    <!-- Main Accordion for Years -->
+    <details class="card mb-5">
+        <summary class="card-header d-flex align-items-center">
+            <h3 class="mb-0">Click Here to View Weekend Timetables by Year</h3>
+            <i class="fas fa-chevron-down ml-auto accordion-icon"></i>
+        </summary>
+        <div class="card-body">
+            <p class="mb-3 text-muted">Click on a student group to view its full timetable. <strong>For best viewing, use computer/laptop/tablet</strong>. Use <strong>landscape mode</strong> to view on smartphone.</p>
+
+            <!-- Year: YEAR ONE -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>YEAR ONE</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <!-- Group: YEAR ONE BIT -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR ONE BIT</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR ONE BIT</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR TWO BSP <br /><b>BIT/DIT/BCS 1106/BSE 1101/BSP 2108 Principles of Programming using C</b><br /><i>Mr. Luyima Alex Cedric 0772302775 </i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR THREE BISS, YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS<br /><b>BIT /DIT 1102/BCS 1108/BIS 3102 Entrepreneurship and Development</b><br /><i>Mr. Mwebaza Marvin</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BSE<br /><b>BIT/DIT 1105/BSE 1203 Fundamentals of Information Systems</b><br /><i>Ms. Nantege Hellen 0774442476</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE<br /><b>BIT/DIT/BCS/BSE 1108/BBC 1107 CISCO Certified Network Associates</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT 1103/BBC/BCS/BRM/BIS 1105 Introduction to Information Technology</b><br /><i>Ms. Nantege Hellen 0774442476</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/DCS/BSE 1103 /BRM 1106/BIS/BBC 1104 Communication Skills***[With Faculty of Business]</b><br /><i>Dr. Kitata Paul</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT<br /><b>BIT/DIT 1104 Mathematics for I.T.</b><br /><i>Dr. Sebuliba Joseph 0788926444</i><br />Room: GMB-03<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/BBC 1101/BSE 1108/BRM 1107/BIS 1104 Christian Ethics I [***With Other Faculties]</b><br /><i>Rev. Juliet Nabatanzi Kansiime 0777523044 </i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR ONE DIT -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR ONE DIT</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR ONE DIT</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR TWO BSP <br /><b>BIT/DIT/BCS 1106/BSE 1101/BSP 2108 Principles of Programming using C</b><br /><i>Mr. Luyima Alex Cedric 0772302775 </i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR THREE BISS, YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS<br /><b>BIT /DIT 1102/BCS 1108/BIS 3102 Entrepreneurship and Development</b><br /><i>Mr. Mwebaza Marvin</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BSE<br /><b>BIT/DIT 1105/BSE 1203 Fundamentals of Information Systems</b><br /><i>Ms. Nantege Hellen 0774442476</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE<br /><b>BIT/DIT/BCS/BSE 1108/BBC 1107 CISCO Certified Network Associates</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT 1103/BBC/BCS/BRM/BIS 1105 Introduction to Information Technology</b><br /><i>Ms. Nantege Hellen 0774442476</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/DCS/BSE 1103 /BRM 1106/BIS/BBC 1104 Communication Skills***[With Faculty of Business]</b><br /><i>Dr. Kitata Paul</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT<br /><b>BIT/DIT 1104 Mathematics for I.T.</b><br /><i>Dr. Sebuliba Joseph 0788926444</i><br />Room: GMB-03<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/BBC 1101/BSE 1108/BRM 1107/BIS 1104 Christian Ethics I [***With Other Faculties]</b><br /><i>Rev. Juliet Nabatanzi Kansiime 0777523044 </i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR ONE BCS -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR ONE BCS</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR ONE BCS</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR TWO BSP <br /><b>BIT/DIT/BCS 1106/BSE 1101/BSP 2108 Principles of Programming using C</b><br /><i>Mr. Luyima Alex Cedric 0772302775 </i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR THREE BISS, YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS<br /><b>BIT /DIT 1102/BCS 1108/BIS 3102 Entrepreneurship and Development</b><br /><i>Mr. Mwebaza Marvin</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td><b>BCS 1104 Probability and Statistics</b><br /><i>Mr. Sekitto Steven 0753447936</i><br />Room: GMB-01<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE<br /><b>BIT/DIT/BCS/BSE 1108/BBC 1107 CISCO Certified Network Associates</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT 1103/BBC/BCS/BRM/BIS 1105 Introduction to Information Technology</b><br /><i>Ms. Nantege Hellen 0774442476</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/DCS/BSE 1103 /BRM 1106/BIS/BBC 1104 Communication Skills***[With Faculty of Business]</b><br /><i>Dr. Kitata Paul</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR ONE BCS, YEAR ONE BSE<br /><b>BCS 1103/BSE 1102/BBC 1108 Discrete Mathematics</b><br /><i>Mr. Sekitto Steven 0753447936</i><br />Room: GMB-01<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/BBC 1101/BSE 1108/BRM 1107/BIS 1104 Christian Ethics I [***With Other Faculties]</b><br /><i>Rev. Juliet Nabatanzi Kansiime 0777523044 </i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR ONE BSE -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR ONE BSE</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR ONE BSE</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR TWO BSP <br /><b>BIT/DIT/BCS 1106/BSE 1101/BSP 2108 Principles of Programming using C</b><br /><i>Mr. Luyima Alex Cedric 0772302775 </i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td><b>BSE 1106 Introduction to Computing (Windows &amp; Linux)</b><br /><i>Ms. Namayanja Rehema 0700548744</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BSE<br /><b>BIT/DIT 1105/BSE 1203 Fundamentals of Information Systems</b><br /><i>Ms. Nantege Hellen 0774442476</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE<br /><b>BIT/DIT/BCS/BSE 1108/BBC 1107 CISCO Certified Network Associates</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td><b>BSE 1104 Calculus I</b><br /><i>Mr. Sekitto Steven 0753447936</i><br />Room: GMB-01<br /></td>
+                                            <td><b>BSE 1105 Software Engineering Principles I</b><br /><i>Mr. Bukoli Herbertson 0702186668</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR ONE BCS, YEAR ONE BSE<br /><b>BCS 1103/BSE 1102/BBC 1108 Discrete Mathematics</b><br /><i>Mr. Sekitto Steven 0753447936</i><br />Room: GMB-01<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/BBC 1101/BSE 1108/BRM 1107/BIS 1104 Christian Ethics I [***With Other Faculties]</b><br /><i>Rev. Juliet Nabatanzi Kansiime 0777523044 </i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR ONE BRIM 
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR ONE BRIM</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR ONE BRIM</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>---</td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>---</td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT 1103/BBC/BCS/BRM/BIS 1105 Introduction to Information Technology</b><br /><i>Ms. Nantege Hellen 0774442476</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/DCS/BSE 1103 /BRM 1106/BIS/BBC 1104 Communication Skills***[With Faculty of Business]</b><br /><i>Dr. Kitata Paul</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>---</td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/BBC 1101/BSE 1108/BRM 1107/BIS 1104 Christian Ethics I [***With Other Faculties]</b><br /><i>Rev. Juliet Nabatanzi Kansiime 0777523044 </i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details> -->
+
+                    <!-- Group: YEAR ONE BISS -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR ONE BISS</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR ONE BISS</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td><b>BIS 1103 Introduction to Information Science</b><br /><i>Ms. Turyabahirwa Alice 0703541955</i><br />Room: F1-1<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>---</td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT 1103/BBC/BCS/BRM/BIS 1105 Introduction to Information Technology</b><br /><i>Ms. Nantege Hellen 0774442476</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/DCS/BSE 1103 /BRM 1106/BIS/BBC 1104 Communication Skills***[With Faculty of Business]</b><br /><i>Dr. Kitata Paul</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td><b>BIS 1101 Shorthand I</b><br /><i>Ms. Turyabahirwa Alice 0703541955</i><br />Room: F1-1<br /></td>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/BBC 1101/BSE 1108/BRM 1107/BIS 1104 Christian Ethics I [***With Other Faculties]</b><br /><i>Rev. Juliet Nabatanzi Kansiime 0777523044 </i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR ONE BIT - JAN INTAKE -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR ONE BIT - JAN INTAKE</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR ONE BIT - JAN INTAKE</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR THREE BSE, YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE<br /><b>BIT 2101/BCS 2104 Object Oriented Programming /BSE 3103 Object Oriented Software Engineering (Java)</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE, YEAR ONE BCS - JAN INTAKE<br /><b>BIT/DIT 1201/BCS 1206 Structured Programming (JAN INTAKE ONLY) / BSE 2102 Object Oriented Programming C++</b><br /><i>Mr. Luyima Alex Cedric 0772302775 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR TWO BCS, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2105 Computer Repair and Maintenance</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br />Room: Former Computer Lab - Block F <br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT 2106 Computer Networks and Data Communications</b><br /><i>Ms. Nantege Hellen 0774442476</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2104 Internet Technologies and Website Design</b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT/BCS 2108/DIT 2106/BSE/BBC 2107 CISCO Certified Network Associates</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR TWO BRIM, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT /DIT/BCS 2103/BSE 2106/BBC 2102/BRM 2106 Database Management Systems </b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT 2102 Management Information Systems and Development</b><br /><i>Ms. Namayanja Rehema 0700548744</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR ONE BCS - JAN INTAKE -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR ONE BCS - JAN INTAKE</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR ONE BCS - JAN INTAKE</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR THREE BSE, YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE<br /><b>BIT 2101/BCS 2104 Object Oriented Programming /BSE 3103 Object Oriented Software Engineering (Java)</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE, YEAR ONE BCS - JAN INTAKE<br /><b>BIT/DIT 1201/BCS 1206 Structured Programming (JAN INTAKE ONLY) / BSE 2102 Object Oriented Programming C++</b><br /><i>Mr. Luyima Alex Cedric 0772302775 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR TWO BCS, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2105 Computer Repair and Maintenance</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br />Room: Former Computer Lab - Block F <br /></td>
+                                            <td>YEAR TWO BCS, YEAR ONE BCS - JAN INTAKE<br /><b>BCS 2106 Numerical Analysis</b><br /><i>Dr. Sebuliba Joseph 0788926444</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2104 Internet Technologies and Website Design</b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR TWO BCS, YEAR ONE BCS - JAN INTAKE<br /><b>BCS 2107 Systems Programming</b><br /><i>Dr. Mugejjera Emmanuel 0703186705</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR TWO BRIM, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT /DIT/BCS 2103/BSE 2106/BBC 2102/BRM 2106 Database Management Systems </b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR TWO BCS, YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE, YEAR ONE BCS - JAN INTAKE<br /><b>BCS 2105/ BSE 2103 Systems Analysis and Design</b><br /><i>Mr. Namukangula Jude 0772853624</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2"><strong>BCS Year ONE JAN INTAKE students</strong> will take <strong>CISCO Certified Network Associates</strong> as a separate course from the rest.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR ONE DIT - JAN INTAKE -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR ONE DIT - JAN INTAKE</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR ONE DIT - JAN INTAKE</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR THREE BSE, YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE<br /><b>BIT 2101/BCS 2104 Object Oriented Programming /BSE 3103 Object Oriented Software Engineering (Java)</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE, YEAR ONE BCS - JAN INTAKE<br /><b>BIT/DIT 1201/BCS 1206 Structured Programming (JAN INTAKE ONLY) / BSE 2102 Object Oriented Programming C++</b><br /><i>Mr. Luyima Alex Cedric 0772302775 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR TWO BCS, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2105 Computer Repair and Maintenance</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br />Room: Former Computer Lab - Block F <br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT 2106 Computer Networks and Data Communications</b><br /><i>Ms. Nantege Hellen 0774442476</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2104 Internet Technologies and Website Design</b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT/BCS 2108/DIT 2106/BSE/BBC 2107 CISCO Certified Network Associates</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR TWO BRIM, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT /DIT/BCS 2103/BSE 2106/BBC 2102/BRM 2106 Database Management Systems </b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT 2102 Management Information Systems and Development</b><br /><i>Ms. Namayanja Rehema 0700548744</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR ONE BSE - JAN INTAKE -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR ONE BSE - JAN INTAKE</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR ONE BSE - JAN INTAKE</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR THREE BSE, YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE<br /><b>BIT 2101/BCS 2104 Object Oriented Programming /BSE 3103 Object Oriented Software Engineering (Java)</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE, YEAR ONE BCS - JAN INTAKE<br /><b>BIT/DIT 1201/BCS 1206 Structured Programming (JAN INTAKE ONLY) / BSE 2102 Object Oriented Programming C++</b><br /><i>Mr. Luyima Alex Cedric 0772302775 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE<br /><b>BSE 2105 Statistics for Engineers</b><br /><i>Mr. Musisi Pascal 0781078532</i><br />Room: GMB-02<br /></td>
+                                            <td>YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE<br /><b>BSE /BBC 2104 Internet of Things &amp; Computer Networks and Data communications</b><br /><i>Mr. Jude Iyke Nicholars 0782909117</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE<br /><b>BBC /BSE 2101 Data Structures Using C</b><br /><i>Mr. Kimera Rogers 0773975761</i><br />Room: GMB-02<br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR TWO BSE, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT/BCS 2108/DIT 2106/BSE/BBC 2107 CISCO Certified Network Associates</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR TWO BRIM, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT /DIT/BCS 2103/BSE 2106/BBC 2102/BRM 2106 Database Management Systems </b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR TWO BCS, YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE, YEAR ONE BCS - JAN INTAKE<br /><b>BCS 2105/ BSE 2103 Systems Analysis and Design</b><br /><i>Mr. Namukangula Jude 0772853624</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+                </div>
+            </details>
+
+            <!-- Year: YEAR TWO -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>YEAR TWO</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <!-- Group: YEAR TWO BIT -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR TWO BIT</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR TWO BIT</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR THREE BSE, YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE<br /><b>BIT 2101/BCS 2104 Object Oriented Programming /BSE 3103 Object Oriented Software Engineering (Java)</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR TWO BCS, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2105 Computer Repair and Maintenance</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br />Room: Former Computer Lab - Block F <br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT 2106 Computer Networks and Data Communications</b><br /><i>Ms. Nantege Hellen 0774442476</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2104 Internet Technologies and Website Design</b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT/BCS 2108/DIT 2106/BSE/BBC 2107 CISCO Certified Network Associates</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR TWO BRIM, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT /DIT/BCS 2103/BSE 2106/BBC 2102/BRM 2106 Database Management Systems </b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT 2102 Management Information Systems and Development</b><br /><i>Ms. Namayanja Rehema 0700548744</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR TWO BCS -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR TWO BCS</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR TWO BCS</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR THREE BSE, YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE<br /><b>BIT 2101/BCS 2104 Object Oriented Programming /BSE 3103 Object Oriented Software Engineering (Java)</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR TWO BCS, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2105 Computer Repair and Maintenance</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br />Room: Former Computer Lab - Block F <br /></td>
+                                            <td>YEAR TWO BCS, YEAR ONE BCS - JAN INTAKE<br /><b>BCS 2106 Numerical Analysis</b><br /><i>Dr. Sebuliba Joseph 0788926444</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2104 Internet Technologies and Website Design</b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR TWO BCS, YEAR ONE BCS - JAN INTAKE<br /><b>BCS 2107 Systems Programming</b><br /><i>Dr. Mugejjera Emmanuel 0703186705</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR TWO BRIM, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT /DIT/BCS 2103/BSE 2106/BBC 2102/BRM 2106 Database Management Systems </b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR TWO BCS, YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE, YEAR ONE BCS - JAN INTAKE<br /><b>BCS 2105/ BSE 2103 Systems Analysis and Design</b><br /><i>Mr. Namukangula Jude 0772853624</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2"><strong>BCS Year Two students</strong> will take <strong>CISCO Certified Network Associates</strong> as a separate course from the rest.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR TWO BSE -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR TWO BSE</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR TWO BSE</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR THREE BSE, YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE<br /><b>BIT 2101/BCS 2104 Object Oriented Programming /BSE 3103 Object Oriented Software Engineering (Java)</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE, YEAR ONE BCS - JAN INTAKE<br /><b>BIT/DIT 1201/BCS 1206 Structured Programming (JAN INTAKE ONLY) / BSE 2102 Object Oriented Programming C++</b><br /><i>Mr. Luyima Alex Cedric 0772302775 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE<br /><b>BSE 2105 Statistics for Engineers</b><br /><i>Mr. Musisi Pascal 0781078532</i><br />Room: GMB-02<br /></td>
+                                            <td>YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE<br /><b>BSE /BBC 2104 Internet of Things &amp; Computer Networks and Data communications</b><br /><i>Mr. Jude Iyke Nicholars 0782909117</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE<br /><b>BBC /BSE 2101 Data Structures Using C</b><br /><i>Mr. Kimera Rogers 0773975761</i><br />Room: GMB-02<br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT/BCS 2108/DIT 2106/BSE/BBC 2107 CISCO Certified Network Associates</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR TWO BRIM, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT /DIT/BCS 2103/BSE 2106/BBC 2102/BRM 2106 Database Management Systems </b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR TWO BCS, YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE, YEAR ONE BCS - JAN INTAKE<br /><b>BCS 2105/ BSE 2103 Systems Analysis and Design</b><br /><i>Mr. Namukangula Jude 0772853624</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR TWO BISS -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR TWO BISS</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR TWO BISS</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td><b>BIS 2105 Information Services Provision</b><br /><i>Ms. Naluyange Edith 0783035346</i><br />Room: GMB-04<br /></td>
+                                            <td><b>BIS 2103 Organisational Behaviour</b><br /><i>Mrs. Irene Nakayenga Sserunjogi 0776058596</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td><b>BIS 2104 Keyboard Skills II </b><br /><i>Ms. Turyabahirwa Alice 0703541955</i><br />Room: F1-1<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td><b>BIS 2101 Intermediate Shorthand</b><br /><i>Ms. Turyabahirwa Alice 0703541955</i><br />Room: F1-1<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td><b>BBC 3105/BIS 2201 Customer Care &amp; Clients Relationship Management</b><br /><i>Mrs. Irene Nakayenga Sserunjogi 0776058596</i><br />Room: GMB-04<br /></td>
+                                            <td><b>BIS 2102 Secretarial Duties</b><br /><i>Ms. Turyabahirwa Alice 0703541955</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR TWO BRIM -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR TWO BRIM</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR TWO BRIM</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td><b>BRM 2106 Analysis of Records Management Systems</b><br /><i>Mr. Kalule Ezra 0704664946</i><br />Room: GMB-02<br /></td>
+                                            <td><b>BRM 2107 Research Data Analysis</b><br /><i>Mr. Kalule Ezra 0704664946</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td><b>BRM 2108 Archieves Administration</b><br /><i>Mrs. Irene Nakayenga Sserunjogi 0776058596</i><br />Room: Temp Structure RM 1<br /></td>
+                                            <td><b>BRM 2202 Health Records Management </b><br /><i>Mrs. Irene Nakayenga Sserunjogi 0776058596</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td><b>BRM 2101 Cataloguing and Classification I</b><br /><i>MS. Nyakato Irene 0783585829</i><br />Room: Temp Structure RM 1<br /></td>
+                                            <td><b>BRM 1101 Management Principles and Practices</b><br /><i>Mr. Kalule Ezra 0704664946</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR TWO BRIM, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT /DIT/BCS 2103/BSE 2106/BBC 2102/BRM 2106 Database Management Systems </b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td><b>BRM 2104 Records Storage and Security</b><br /><i>Mr. Kalule Ezra 0704664946</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR TWO DIT -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR TWO DIT</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR TWO DIT</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR THREE BSE, YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE<br /><b>BIT 2101/BCS 2104 Object Oriented Programming /BSE 3103 Object Oriented Software Engineering (Java)</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR TWO BCS, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2105 Computer Repair and Maintenance</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br />Room: Former Computer Lab - Block F <br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT 2106 Computer Networks and Data Communications</b><br /><i>Ms. Nantege Hellen 0774442476</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2104 Internet Technologies and Website Design</b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT/BCS 2108/DIT 2106/BSE/BBC 2107 CISCO Certified Network Associates</b><br /><i>Mr. Nabimanya Peter 0772538333 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR TWO BRIM, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT /DIT/BCS 2103/BSE 2106/BBC 2102/BRM 2106 Database Management Systems </b><br /><i>Mr. Bazanya Matthew 0773344599</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT 2102 Management Information Systems and Development</b><br /><i>Ms. Namayanja Rehema 0700548744</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR TWO BSP -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR TWO BSP </h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR TWO BSP </span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR TWO BSP <br /><b>BIT/DIT/BCS 1106/BSE 1101/BSP 2108 Principles of Programming using C</b><br /><i>Mr. Luyima Alex Cedric 0772302775 </i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td><b>BBC 3102 / BSP 2107 Development Economics ***[With Faculty of Business]</b><br /><i>Ms. Mirembe Deborah Senkaali</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td><b>BSP 2101 Maltivariate Statistics</b><br /><i>Ms. Namata Suzan 0786983852</i><br /></td>
+                                            <td><b>BSP 2105 Economic Policy &amp; Planning ***[With Faculty of Business]</b><br /><i>Mr. Erugu Elijah</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td><b>BSP 2106 Strategic Planning &amp; Management ***[With Faculty of Business]</b><br /><i>Ms. Asiimwe Sheba</i><br />Room: D2-1<br /></td>
+                                            <td><b>BSP 2103 Probability and Sampling Theory</b><br /><i>Mr. Sekitto Steven 0753447936</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR THREE BIT, YEAR FOUR BSE, YEAR TWO BSP <br /><b>BIT/BBC 3104/BIS 3103 /BSE 4104 IT Project Planning and Management</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: G-1<br /></td>
+                                            <td><b>BSP 2102 Industrial Statistics</b><br /><i>Mr. Sekitto Steven 0753447936</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+                </div>
+            </details>
+
+            <!-- Year: YEAR THREE -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>YEAR THREE</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <!-- Group: YEAR THREE BIT -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR THREE BIT</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR THREE BIT</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR THREE BIT, YEAR THREE BCS<br /><b>BIT 3103/BCS 3102 Business Intelligence and Data Warehousing</b><br /><i>Mr. Jude Iyke Nicholars 0782909117</i><br />Room: G-1<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR THREE BIT, YEAR THREE BCS, YEAR THREE BSE<br /><b>BIT /BCS 3105/BBC 2105/BSE 3101 User Interface &amp; Programming with Visual Basic</b><br /><i>Mr. Bukoli Herbertson 0702186668</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR THREE BIT, YEAR THREE BCS<br /><b>BIT/BCS 3101 Systems Administration</b><br /><i>Mr. Muchake Brian 0701178573</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td><b>BIT 3102 Human Computer Interaction</b><br /><i>Mr. Bazzeketa Datsun 0705333525</i><br />Room: G-1<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR THREE BIT, YEAR FOUR BSE, YEAR TWO BSP <br /><b>BIT/BBC 3104/BIS 3103 /BSE 4104 IT Project Planning and Management</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: G-1<br /></td>
+                                            <td>YEAR THREE BIT, YEAR THREE BCS, YEAR FOUR BSE<br /><b>BIT 3106/BCS 3107/BRM/BIS 3108/BSE 4107 Final Year Project Planning and Design</b><br /><i>Dr. Mugejjera Emmanuel 0703186705</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR THREE BCS -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR THREE BCS</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR THREE BCS</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR THREE BIT, YEAR THREE BCS<br /><b>BIT 3103/BCS 3102 Business Intelligence and Data Warehousing</b><br /><i>Mr. Jude Iyke Nicholars 0782909117</i><br />Room: G-1<br /></td>
+                                            <td>YEAR FOUR BSE, YEAR THREE BCS<br /><b>BCS 3107/BSE 4103 Distributed Systems</b><br /><i>Mr. Bazzeketa Datsun 0705333525</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR THREE BIT, YEAR THREE BCS, YEAR THREE BSE<br /><b>BIT /BCS 3105/BBC 2105/BSE 3101 User Interface &amp; Programming with Visual Basic</b><br /><i>Mr. Bukoli Herbertson 0702186668</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td>YEAR THREE BIT, YEAR THREE BCS<br /><b>BIT/BCS 3101 Systems Administration</b><br /><i>Mr. Muchake Brian 0701178573</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td><b>BCS 3106 Machine Learning</b><br /><i>Mr. Luyima Alex Cedric 0772302775 </i><br />Room: GMB-03<br /></td>
+                                            <td>YEAR THREE BCS, YEAR FOUR BSE<br /><b>BCS 3106/BSE 4105 Computational Game Theory and Economics </b><br /><i>Mr. Muchake Brian 0701178573</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td><b>BCS 3104 Client-Server Programming for Application</b><br /><i>Mr. Kateete Twaha 0778313421</i><br />Room: Former Computer Lab - Block F <br /></td>
+                                            <td>YEAR THREE BIT, YEAR THREE BCS, YEAR FOUR BSE<br /><b>BIT 3106/BCS 3107/BRM/BIS 3108/BSE 4107 Final Year Project Planning and Design</b><br /><i>Dr. Mugejjera Emmanuel 0703186705</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR THREE BSE -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR THREE BSE</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR THREE BSE</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>YEAR THREE BSE, YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE<br /><b>BIT 2101/BCS 2104 Object Oriented Programming /BSE 3103 Object Oriented Software Engineering (Java)</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: Block C - Computer Lab<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>YEAR THREE BIT, YEAR THREE BCS, YEAR THREE BSE<br /><b>BIT /BCS 3105/BBC 2105/BSE 3101 User Interface &amp; Programming with Visual Basic</b><br /><i>Mr. Bukoli Herbertson 0702186668</i><br />Room: Block D - Computer Lab<br /></td>
+                                            <td><b>BSE 3104 Modeling and Simulation</b><br /><i>Mr. Kiwalabye Charles 0704415668 </i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td><b>BSE 3106 Concept of Computer Aided Design and Modelling</b><br /><i>Mr. Kateete Twaha 0778313421</i><br />Room: GMB-04<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td><b>BSE 3102 Logic and Computation</b><br /><i>Mr. Kimera Rogers 0773975761</i><br />Room: GMB-02<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+
+                    <!-- Group: YEAR THREE BISS -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR THREE BISS</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR THREE BISS</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td><b>BIS 3107 Preservation and Security of Information Resources</b><br /><i>Mr. Bivanju Sinan 0772195947</i><br />Room: GMB-03<br /></td>
+                                            <td>YEAR THREE BISS, YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS<br /><b>BIT /DIT 1102/BCS 1108/BIS 3102 Entrepreneurship and Development</b><br /><i>Mr. Mwebaza Marvin</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td><b>BIS 3104 Applied Management Information Systems</b><br /><i>Ms. Namayanja Rehema 0700548744</i><br />Room: GMB-03<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td><b>BIS 3105 Information in a Digital Environment</b><br /><i>Mr. Mutekanga Ivan 0706180963</i><br />Room: Former Computer Lab - Block F <br /></td>
+                                            <td><b>BIS 3106 Social Administration</b><br /><i>Ms. Turyabahirwa Alice 0703541955</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>---</td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+                </div>
+            </details>
+
+            <!-- Year: YEAR FOUR -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>YEAR FOUR</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <!-- Group: YEAR FOUR BSE -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>YEAR FOUR BSE</h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">YEAR FOUR BSE</span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td><b>BSE 4105 Software Engineering Project</b><br /><i>Mr. Bazzeketa Datsun 0705333525</i><br />Room: GMB-01<br /></td>
+                                            <td>YEAR FOUR BSE, YEAR THREE BCS<br /><b>BCS 3107/BSE 4103 Distributed Systems</b><br /><i>Mr. Bazzeketa Datsun 0705333525</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td><b>BSE 4102 Software Design Patterns</b><br /><i>Mr. Kateete Twaha 0778313421</i><br />Room: GMB-04<br /></td>
+                                            <td><b>BSE 4101 Systems and Information Security</b><br /><i>Mr. Namukangula Jude 0772853624</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>---</td>
+                                            <td>YEAR THREE BCS, YEAR FOUR BSE<br /><b>BCS 3106/BSE 4105 Computational Game Theory and Economics </b><br /><i>Mr. Muchake Brian 0701178573</i><br /></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>YEAR THREE BIT, YEAR FOUR BSE, YEAR TWO BSP <br /><b>BIT/BBC 3104/BIS 3103 /BSE 4104 IT Project Planning and Management</b><br /><i>Mr. Onyango Laban 0702472180</i><br />Room: G-1<br /></td>
+                                            <td>YEAR THREE BIT, YEAR THREE BCS, YEAR FOUR BSE<br /><b>BIT 3106/BCS 3107/BRM/BIS 3108/BSE 4107 Final Year Project Planning and Design</b><br /><i>Dr. Mugejjera Emmanuel 0703186705</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+                </div>
+            </details>
+
+            <!-- Year:    -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>BRM COURSES (FOR EXEMPTED STUDENTS)</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <!-- Group:     -->
+                    <details class="accordion-item mb-3">
+                        <summary class="accordion-header">
+                            <h5>BRM COURSES (FOR EXEMPTED STUDENTS) </h5>
+                            <i class="fas fa-chevron-down accordion-icon"></i>
+                        </summary>
+                        <div class="accordion-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name">BRM COURSES (FOR EXEMPTED STUDENTS) </span></caption>
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <th class="xAxis">SAT</th>
+                                            <th class="xAxis">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="yAxis">07:00AM-10:00AM</th>
+                                            <td>  <br /><b>BRM 1105 Government Information Resources</b><br /><i>Mrs. Irene Nakayenga Sserunjogi 0776058596</i><br />Room: Temp Structure RM 2<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">10:00AM-01:00PM</th>
+                                            <td>  <br /><b>BRM 1105 Information Technology II</b><br /><i>Mr. Kalule Ezra 0704664946</i><br />Room: Temp Structure RM 2<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">02:00PM-05:00PM</th>
+                                            <td>  <br /><b>BRM 1102 Audiovisual Records Management</b><br /><i>Mr. Bivanju Sinan 0772195947</i><br />Room: Temp Structure RM 2<br /></td>
+                                            <td>---</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="yAxis">05:00PM-08:00PM</th>
+                                            <td>  <br /><b>BRM 1101 Paper Making and Reprography</b><br /><i>Mr. Bivanju Sinan 0772195947</i><br />Room: Temp Structure RM 2<br /></td>
+                                            <td>  <br /><b>BRM 1104 Applied Organisation Psychology</b><br /><i>MS. Nyakato Irene 0783585829</i><br /></td>
+                                        </tr>
+                                        <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                        </div>
+                    </details>
+                </div>
+            </details>
+        </div>
+    </details>
 </div>
 {% endblock %}

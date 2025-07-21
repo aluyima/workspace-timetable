@@ -1,10 +1,1971 @@
 {% extends 'base.html' %}
 
+{% block extra_css %}
+<style>
+    /* Custom styles for accordion functionality and table appearance */
+    .accordion-item {
+        border: 1px solid var(--medium-gray); /* Use medium-gray for border */
+        border-radius: var(--border-radius-md);
+        overflow: hidden; /* Ensures rounded corners apply correctly */
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1rem; /* Added margin for spacing between group accordions */
+    }
+
+    .accordion-header {
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle line for nested accordion */
+    }
+
+    .accordion-header h4 {
+        color: var(--white); /* Ensure heading color is white */
+        margin-bottom: 0;
+    }
+    
+    .accordion-header h5 {
+        color: var(--white); /* Ensure heading color is white */
+        margin-bottom: 0;
+    }
+
+    .accordion-icon {
+        transition: transform 0.3s ease;
+    }
+
+    /* Rotate icon when accordion is open */
+    .accordion-item[open] .accordion-icon {
+        transform: rotate(180deg);
+    }
+
+    .accordion-content {
+        padding: 1.5rem;
+        background-color: var(--white);
+        border-top: 1px solid var(--medium-gray); /* Use medium-gray for border */
+    }
+
+    /* Styles for the individual timetables within the accordion */
+    .accordion-content .table-responsive {
+        margin-bottom: 1.5rem; /* Space between each day's timetable */
+        box-shadow: var(--shadow-sm); /* Add shadow to individual tables */
+        border-radius: var(--border-radius-md); /* Apply border-radius to responsive wrapper */
+        overflow-x: auto; /* IMPORTANT: Enables horizontal scrolling for tables */
+        -webkit-overflow-scrolling: touch; /* Improves scrolling on iOS */
+    }
+
+    .accordion-content table {
+        width: 100%; /* Ensure table takes full width of its container */
+        min-width: 600px; /* Give tables a minimum width to force horizontal scroll if needed */
+        border-collapse: collapse;
+        margin-top: 0; /* Remove default table margin-top as it's handled by table-responsive margin-bottom */
+    }
+
+    .accordion-content table caption {
+        font-size: 1.1em;
+        font-weight: bold;
+        text-align: left;
+        margin-bottom: 0.5rem;
+        color: var(--white); /* Changed to white */
+        background-color: var(--secondary-color); /* Use secondary color for caption background */
+        padding: 0.75rem 1rem; /* Adjust caption padding */
+        border-top-left-radius: var(--border-radius-md); /* Match table-responsive border-radius */
+        border-top-right-radius: var(--border-radius-md); /* Match table-responsive border-radius */
+    }
+
+    .accordion-content table caption .institution {
+        font-size: 0.9em;
+        color: var(--white); /* Changed to white */
+        display: block;
+        opacity: 0.9;
+    }
+
+    .accordion-content table th,
+    .accordion-content table td {
+        border: 1px solid var(--medium-gray); /* Consistent border color */
+        padding: 0.75rem;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .accordion-content table thead th {
+        background-color: var(--light-gray); /* Use light-gray for header background */
+        font-weight: bold;
+        text-align: center;
+        color: var(--text-color); /* Ensure header text is readable */
+    }
+
+    .accordion-content table tbody tr:nth-child(odd) {
+        background-color: var(--white);
+    }
+
+    .accordion-content table tbody tr:nth-child(even) {
+        background-color: var(--light-gray);
+    }
+
+    .accordion-content table .yAxis {
+        background-color: var(--primary-color);
+        color: var(--white);
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .accordion-content table .foot {
+        font-size: 0.8em;
+        color: var(--dark-gray);
+        background-color: var(--light-gray);
+    }
+
+    /* Button styling */
+    .accordion-content .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--white);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .accordion-content .btn-primary:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-1px);
+    }
+
+    /* Mobile specific adjustments for tables within accordion */
+    @media (max-width: 768px) {
+        .accordion-content table th,
+        .accordion-content table td {
+            padding: 0.5rem;
+            font-size: 0.9em;
+        }
+
+        .accordion-header {
+            padding: 1rem; /* Adjust padding for smaller screens */
+        }
+
+        .accordion-content table caption {
+            font-size: 1em; /* Smaller font for captions on mobile */
+            padding: 0.5rem 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container text-center py-5">
-    <h2 class="display-4 text-primary mb-4">Coming Soon</h2>
-    <p class="lead text-muted">The Weekend Kampala Timetable is currently being prepared.</p>
-    <p class="lead text-muted">Please check back later.</p>
-    <img src="[https://placehold.co/400x200/e0e0e0/555555?text=Under+Construction](https://placehold.co/400x200/e0e0e0/555555?text=Under+Construction)" alt="Under Construction" class="img-fluid mt-4 rounded-md shadow-sm">
+<div class="container">
+    <div class="mb-4">
+        <p class="campus">FACULTY OF SCIENCE &amp; COMPUTING - WEEKEND KAMPALA CAMPUS - NDEJJE UNIVERSITY</p>
+        <p class="text-large">SEMESTER I ACADEMIC YEAR 2025/2026</p>
+    </div>
+
+    <!-- Main Accordion for Lecturers -->
+    <details class="card mb-5">
+        <summary class="card-header d-flex align-items-center">
+            <h3 class="mb-0">Click Here to View Weekend Schedules by Lecturers.</h3>
+            <i class="fas fa-chevron-down ml-auto accordion-icon"></i>
+        </summary>
+        <div class="card-body">
+            <p class="mb-3 text-muted">Click on a lecturer's name to view their schedule. <strong>For best viewing, use computer/laptop/tablet</strong>. Use <strong>landscape mode</strong> to view on smartphone.</p>
+
+            <!-- Lecturer: Dr. Mugejjera Emmanuel 0703186705 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Dr. Mugejjera Emmanuel 0703186705</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Dr. Mugejjera Emmanuel 0703186705</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR TWO BCS, YEAR ONE BCS - JAN INTAKE<br /><b>BCS 2107 Systems Programming</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR THREE BIT, YEAR THREE BCS, YEAR FOUR BSE<br /><b>BIT 3106/BCS 3107/BRM/BIS 3108/BSE 4107 Final Year Project Planning and Design</b><br /></td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Dr. Nalela Kizito -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Dr. Nalela Kizito</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Dr. Nalele Kizito</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Dr. Sebuliba Joseph 0788926444 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Dr. Sebuliba Joseph 0788926444</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Dr. Sebuliba Joseph 0788926444</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR TWO BCS, YEAR ONE BCS - JAN INTAKE<br /><b>BCS 2106 Numerical Analysis</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT<br /><b>BIT/DIT 1104 Mathematics for I.T.</b><br />Room: GMB-03<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Dr. Setekera Robert 0789702701 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Dr. Setekera Robert 0789702701</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Dr. Setekera Robert 0789702701</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Bazanya Matthew 0773344599 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Bazanya Matthew 0773344599</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Bazanya Matthew 0773344599</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2104 Internet Technologies and Website Design</b><br />Room: Block C - Computer Lab<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR TWO BSE, YEAR TWO BRIM, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT /DIT/BCS 2103/BSE 2106/BBC 2102/BRM 2106 Database Management Systems </b><br />Room: Block D - Computer Lab<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Bazzeketa Datsun 0705333525 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Bazzeketa Datsun 0705333525</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Bazzeketa Datsun 0705333525</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>YEAR FOUR BSE<br /><b>BSE 4105 Software Engineering Project</b><br />Room: GMB-01<br /></td>
+                                    <td>YEAR FOUR BSE, YEAR THREE BCS<br /><b>BCS 3107/BSE 4103 Distributed Systems</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR THREE BIT<br /><b>BIT 3102 Human Computer Interaction</b><br />Room: G-1<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Bivanju Sinan 0772195947 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Bivanju Sinan 0772195947</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Bivanju Sinan 0772195947</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>YEAR THREE BISS<br /><b>BIS 3107 Preservation and Security of Information Resources</b><br />Room: GMB-03<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>  <br /><b>BRM 1102 Audiovisual Records Management</b><br />Room: Temp Structure RM 2<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>  <br /><b>BRM 1101 Paper Making and Reprography</b><br />Room: Temp Structure RM 2<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Bukoli Herbertson 0702186668 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Bukoli Herbertson 0702186668</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Bukoli Herbertson 0702186668</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>YEAR THREE BIT, YEAR THREE BCS, YEAR THREE BSE<br /><b>BIT /BCS 3105/BBC 2105/BSE 3101 User Interface &amp; Programming with Visual Basic</b><br />Room: Block D - Computer Lab<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR ONE BSE<br /><b>BSE 1105 Software Engineering Principles I</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Jude Iyke Nicholars 0782909117 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Jude Iyke Nicholars 0782909117</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Jude Iyke Nicholars 0782909117</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>YEAR THREE BIT, YEAR THREE BCS<br /><b>BIT 3103/BCS 3102 Business Intelligence and Data Warehousing</b><br />Room: G-1<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE<br /><b>BSE /BBC 2104 Internet of Things &amp; Computer Networks and Data communications</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Kalule Ezra 0704664946 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Kalule Ezra 0704664946</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Kalule Ezra 0704664946</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>YEAR TWO BRIM<br /><b>BRM 2106 Analysis of Records Management Systems</b><br />Room: GMB-02<br /></td>
+                                    <td>YEAR TWO BRIM<br /><b>BRM 2107 Research Data Analysis</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>  <br /><b>BRM 1105 Information Technology II</b><br />Room: Temp Structure RM 2<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR TWO BRIM<br /><b>BRM 1101 Management Principles and Practices</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR TWO BRIM<br /><b>BRM 2104 Records Storage and Security</b><br /></td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Kateete Twaha 0778313421 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Kateete Twaha 0778313421</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Kateete Twaha 0778313421</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>YEAR FOUR BSE<br /><b>BSE 4102 Software Design Patterns</b><br />Room: GMB-04<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR THREE BSE<br /><b>BSE 3106 Concept of Computer Aided Design and Modelling</b><br />Room: GMB-04<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>YEAR THREE BCS<br /><b>BCS 3104 Client-Server Programming for Application</b><br />Room: Former Computer Lab - Block F <br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Kimera Rogers 0773975761 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Kimera Rogers 0773975761</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Kimera Rogers 0773975761</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE<br /><b>BBC /BSE 2101 Data Structures Using C</b><br />Room: GMB-02<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>YEAR THREE BSE<br /><b>BSE 3102 Logic and Computation</b><br />Room: GMB-02<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Dr. Kitata Paul -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Dr. Kitata Paul</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Dr. Kitata Paul</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/DCS/BSE 1103 /BRM 1106/BIS/BBC 1104 Communication Skills***[With Faculty of Business]</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Kiwalabye Charles 0704415668 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Kiwalabye Charles 0704415668 </h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Kiwalabye Charles 0704415668 </i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR THREE BSE<br /><b>BSE 3104 Modeling and Simulation</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Luyima Alex Cedric 0772302775 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Luyima Alex Cedric 0772302775 </h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Luyima Alex Cedric 0772302775 </i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR TWO BSP <br /><b>BIT/DIT/BCS 1106/BSE 1101/BSP 2108 Principles of Programming using C</b><br />Room: Block D - Computer Lab<br /></td>
+                                    <td>YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE, YEAR ONE BCS - JAN INTAKE<br /><b>BIT/DIT 1201/BCS 1206 Structured Programming (JAN INTAKE ONLY) / BSE 2102 Object Oriented Programming C++</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR THREE BCS<br /><b>BCS 3106 Machine Learning</b><br />Room: GMB-03<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Muchake Brian 0701178573 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Muchake Brian 0701178573</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Muchake Brian 0701178573</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR THREE BIT, YEAR THREE BCS<br /><b>BIT/BCS 3101 Systems Administration</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR THREE BCS, YEAR FOUR BSE<br /><b>BCS 3106/BSE 4105 Computational Game Theory and Economics </b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Musisi Pascal 0781078532 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Musisi Pascal 0781078532</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Musisi Pascal 0781078532</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE<br /><b>BSE 2105 Statistics for Engineers</b><br />Room: GMB-02<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Mutekanga Ivan 0706180963 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Mutekanga Ivan 0706180963</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Mutekanga Ivan 0706180963</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR THREE BISS<br /><b>BIS 3105 Information in a Digital Environment</b><br />Room: Former Computer Lab - Block F <br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Mwanje Abiyasaali 0778798741 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Mwanje Abiyasaali 0778798741 </h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Mwanje Abiyasaali 0778798741 </i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Mwebaza Marvin -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Mwebaza Marvin</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Mwebaza Marvin</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>YEAR THREE BISS, YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS<br /><b>BIT /DIT 1102/BCS 1108/BIS 3102 Entrepreneurship and Development</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Nabimanya Peter 0772538333 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Nabimanya Peter 0772538333 </h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Nabimanya Peter 0772538333 </i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>YEAR TWO BIT, YEAR TWO DIT, YEAR TWO BCS, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT/BCS 2105 Computer Repair and Maintenance</b><br />Room: Former Computer Lab - Block F <br /></td>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE<br /><b>BIT/DIT/BCS/BSE 1108/BBC 1107 CISCO Certified Network Associates</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR TWO BIT, YEAR TWO DIT, YEAR TWO BSE, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE<br /><b>BIT/BCS 2108/DIT 2106/BSE/BBC 2107 CISCO Certified Network Associates</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Namukangula Jude 0772853624 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Namukangula Jude 0772853624</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Namukangula Jude 0772853624</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR FOUR BSE<br /><b>BSE 4101 Systems and Information Security</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR TWO BCS, YEAR TWO BSE, YEAR ONE BSE - JAN INTAKE, YEAR ONE BCS - JAN INTAKE<br /><b>BCS 2105/ BSE 2103 Systems Analysis and Design</b><br /></td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Onyango Laban 0702472180 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Onyango Laban 0702472180</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Onyango Laban 0702472180</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>YEAR THREE BSE, YEAR TWO BIT, YEAR TWO BCS, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE BCS - JAN INTAKE, YEAR ONE DIT - JAN INTAKE, YEAR ONE BSE - JAN INTAKE, YEAR TWO BSE<br /><b>BIT 2101/BCS 2104 Object Oriented Programming /BSE 3103 Object Oriented Software Engineering (Java)</b><br />Room: Block C - Computer Lab<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>YEAR THREE BIT, YEAR FOUR BSE, YEAR TWO BSP <br /><b>BIT/BBC 3104/BIS 3103 /BSE 4104 IT Project Planning and Management</b><br />Room: G-1<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Sekitto Steven 0753447936 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Sekitto Steven 0753447936</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Sekitto Steven 0753447936</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>YEAR ONE BCS<br /><b>BCS 1104 Probability and Statistics</b><br />Room: GMB-01<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR ONE BSE<br /><b>BSE 1104 Calculus I</b><br />Room: GMB-01<br /></td>
+                                    <td>YEAR TWO BSP <br /><b>BSP 2103 Probability and Sampling Theory</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>YEAR ONE BCS, YEAR ONE BSE<br /><b>BCS 1103/BSE 1102/BBC 1108 Discrete Mathematics</b><br />Room: GMB-01<br /></td>
+                                    <td>YEAR TWO BSP <br /><b>BSP 2102 Industrial Statistics</b><br /></td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mrs. Elizabeth Muwanguzi, 0772563143 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mrs. Elizabeth Muwanguzi, 0772563143</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mrs. Elizabeth Muwanguzi, 0772563143</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mrs. Irene Nakayenga Sserunjogi 0776058596 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mrs. Irene Nakayenga Sserunjogi 0776058596</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mrs. Irene Nakayenga Sserunjogi 0776058596</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>  <br /><b>BRM 1105 Government Information Resources</b><br />Room: Temp Structure RM 2<br /></td>
+                                    <td>YEAR TWO BISS<br /><b>BIS 2103 Organisational Behaviour</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>YEAR TWO BRIM<br /><b>BRM 2108 Archieves Administration</b><br />Room: Temp Structure RM 1<br /></td>
+                                    <td>YEAR TWO BRIM<br /><b>BRM 2202 Health Records Management </b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>YEAR TWO BISS<br /><b>BBC 3105/BIS 2201 Customer Care &amp; Clients Relationship Management</b><br />Room: GMB-04<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mrs. Kakande Ritah -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mrs. Kakande Ritah</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mrs. Kakande Ritah</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Ms. Mirembe Deborah Senkaali -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Mirembe Deborah Senkaali</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Ms. Mirembe Deborah Senkaali</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>YEAR TWO BSP <br /><b>BBC 3102 / BSP 2107 Development Economics ***[With Faculty of Business]</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Ms. Naluyange Edith 0783035346 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Naluyange Edith 0783035346</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Ms. Naluyange Edith 0783035346</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>YEAR TWO BISS<br /><b>BIS 2105 Information Services Provision</b><br />Room: GMB-04<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Ms. Namata Suzan 0786983852 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Namata Suzan 0786983852</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Ms. Namata Suzan 0786983852</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>YEAR TWO BSP <br /><b>BSP 2101 Maltivariate Statistics</b><br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Ms. Namayanja Rehema 0700548744 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Namayanja Rehema 0700548744</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Ms. Namayanja Rehema 0700548744</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>YEAR ONE BSE<br /><b>BSE 1106 Introduction to Computing (Windows &amp; Linux)</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>YEAR THREE BISS<br /><b>BIS 3104 Applied Management Information Systems</b><br />Room: GMB-03<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT/DIT 2102 Management Information Systems and Development</b><br /></td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Ms. Namujju Victoria 0774 177 843 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Namujju Victoria 0774 177 843</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Ms. Namujju Victoria 0774 177 843</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Ms. Nantege Hellen 0774442476 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Nantege Hellen 0774442476</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Ms. Nantege Hellen 0774442476</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BSE<br /><b>BIT/DIT 1105/BSE 1203 Fundamentals of Information Systems</b><br />Room: Block C - Computer Lab<br /></td>
+                                    <td>YEAR TWO BIT, YEAR TWO DIT, YEAR ONE BIT - JAN INTAKE, YEAR ONE DIT - JAN INTAKE<br /><b>BIT 2106 Computer Networks and Data Communications</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT 1103/BBC/BCS/BRM/BIS 1105 Introduction to Information Technology</b><br />Room: Block D - Computer Lab<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: MS. Nyakato Irene 0783585829 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>MS. Nyakato Irene 0783585829</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>MS. Nyakato Irene 0783585829</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR TWO BRIM<br /><b>BRM 2101 Cataloguing and Classification I</b><br />Room: Temp Structure RM 1<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>  <br /><b>BRM 1104 Applied Organisation Psychology</b><br /></td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Ms. Turyabahirwa Alice 0703541955 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Turyabahirwa Alice 0703541955</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Ms. Turyabahirwa Alice 0703541955</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>YEAR ONE BISS<br /><b>BIS 1103 Introduction to Information Science</b><br />Room: F1-1<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>YEAR TWO BISS<br /><b>BIS 2104 Keyboard Skills II </b><br />Room: F1-1<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR TWO BISS<br /><b>BIS 2101 Intermediate Shorthand</b><br />Room: F1-1<br /></td>
+                                    <td>YEAR THREE BISS<br /><b>BIS 3106 Social Administration</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>YEAR ONE BISS<br /><b>BIS 1101 Shorthand I</b><br />Room: F1-1<br /></td>
+                                    <td>YEAR TWO BISS<br /><b>BIS 2102 Secretarial Duties</b><br /></td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Rev. Juliet Nabatanzi Kansiime 0777523044 -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Rev. Juliet Nabatanzi Kansiime 0777523044 </h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Rev. Juliet Nabatanzi Kansiime 0777523044 </i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR ONE BIT, YEAR ONE DIT, YEAR ONE BCS, YEAR ONE BSE, YEAR ONE BRIM, YEAR ONE BISS<br /><b>BIT/DIT/BCS/BBC 1101/BSE 1108/BRM 1107/BIS 1104 Christian Ethics I [***With Other Faculties]</b><br /></td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Rev. Latimer Muwanguzi -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Rev. Latimer Muwanguzi</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Rev. Latimer Muwanguzi</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Ms. Asiimwe Sheba -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Ms. Asiimwe Sheba</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Ms. Asiimwe Sheba</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>YEAR TWO BSP <br /><b>BSP 2106 Strategic Planning &amp; Management ***[With Faculty of Business]</b><br />Room: D2-1<br /></td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+
+            <!-- Lecturer: Mr. Erugu Elijah -->
+            <details class="accordion-item mb-3">
+                <summary class="accordion-header">
+                    <h4>Mr. Erugu Elijah</h4>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </summary>
+                <div class="accordion-content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption><span class="institution">NDEJJE UNIVERSITY</span><br /><span class="name"><i>Mr. Erugu Elijah</i></span></caption>
+                            <thead>
+                                <tr>
+                                    <td></td>
+                                    <th class="xAxis">SAT</th>
+                                    <th class="xAxis">SUN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th class="yAxis">07:00AM-10:00AM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">10:00AM-01:00PM</th>
+                                    <td>---</td>
+                                    <td>YEAR TWO BSP <br /><b>BSP 2105 Economic Policy &amp; Planning ***[With Faculty of Business]</b><br /></td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">02:00PM-05:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr>
+                                    <th class="yAxis">05:00PM-08:00PM</th>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr class="foot"><td></td><td colspan="2">Timetable generated by AI Research Center - FoSC - NDEJJE UNIVERSITY</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-right mt-3 mb-5"><a href="#top" class="btn btn-primary">Back to Top</a></p>
+                </div>
+            </details>
+        </div>
+    </details>
 </div>
 {% endblock %}
